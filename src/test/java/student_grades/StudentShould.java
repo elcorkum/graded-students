@@ -3,7 +3,9 @@ package student_grades;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,8 +14,28 @@ class StudentShould {
     Student student = new Student("Sandra", "Bullock", testScores);
 
     @Test
-    @DisplayName("createStudentWithCorrectParameters")
+    @DisplayName("setFirstNameCorrectly")
+    public void setFirstNameGivenFirstNameParameter(){
+        student.setFirstName("June");
+        assertEquals("June", student.getFirstName());
+    }
 
+    @Test
+    @DisplayName("setLastNameCorrectly")
+    public void setLastNameGivenLastNameParameter(){
+        student.setLastName("Bug");
+        assertEquals("Bug", student.getLastName());
+    }
+
+    @Test
+    @DisplayName("returnCorrectExamScoreWhenGetterIsCalled")
+    public void getTheCorrectExamScoreWithGetter(){
+        ArrayList<Double> expectedExamScores = new ArrayList<Double>(List.of(testScores));
+        assertEquals(expectedExamScores, student.getExamScores());
+    }
+
+    @Test
+    @DisplayName("createStudentWithCorrectParameters")
     public void studentConstructor(){
         Double[] actualTestScores = student.getExamScores().toArray(new Double[0]);
         assertEquals("Sandra", student.getFirstName());

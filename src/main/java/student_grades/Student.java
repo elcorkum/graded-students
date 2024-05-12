@@ -1,6 +1,5 @@
 package student_grades;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +60,7 @@ public class Student {
         for(Double examScore: this.examScores){
             result += examScore;
         }
-        return result/this.examScores.size();
+        return (double) Math.round(result / this.examScores.size() * 100) /100;
     }
 
     @Override

@@ -20,6 +20,7 @@ class ClassroomShould {
     Double[] testScores9 = {11.0};
     Double[] testScores10 = {0.0};
     Double[] testScores11 = {-1.0};
+    Double[] testScores12 = {53.4, 86.5, 74.0};
     Student student1 = new Student("Cami", "Cabello", testScores1);
     Student student2 = new Student("May", "Flower", testScores2);
     Student student3 = new Student("Jay", "Bloom", testScores3);
@@ -31,6 +32,7 @@ class ClassroomShould {
     Student student9 = new Student("Jane", "J", testScores9);
     Student student10 = new Student("Imani", "Musiki", testScores10);
     Student student11 = new Student("Pendo", "Mali", testScores11);
+    Student student12 = new Student("May", "Bee", testScores12);
     Student[] studentsInClassroom = {student1, student2, student3};
     Classroom classroom = new Classroom(studentsInClassroom);
     Student[] gradedStudents = {student1, student2, student3, student4, student5, student6, student7,
@@ -63,8 +65,17 @@ class ClassroomShould {
     public void addStudentToClassroomCorrectly(){
         classroom.removeStudent(student2.getFirstName(), student2.getLastName());
         classroom.addStudent(student4);
-        assertSame(classroom.getStudents()[2], student4);
+        assertSame(student4, classroom.getStudents()[2]);
     }
+
+    @Test
+    @DisplayName("denyAdditionOfStudentToClassroomIfClassroomFull")
+    public void denyAdditionOfStudentToClassroom(){
+        classroom.addStudent(student4);
+        assertEquals(3, classroom.getStudents().length);
+        assertNotSame(student4, classroom.getStudents()[2]);
+    }
+
 
     @Test
     @DisplayName("allowRemovalOfStudentFromClassroom")
@@ -91,8 +102,14 @@ class ClassroomShould {
         assertArrayEquals(expectedOrderOfStudents, classroom.getStudentsByScore());
         assertNull(classroom.getStudentsByScore()[2]);
     }
-    //test for when two students with similar score and different names
-    //test for when students with similar scores and similar first names but different last names.
+
+    @Test
+    @DisplayName("returnListOfStudentsSortedFromHighestToLowestScoreWhenSimilarStudentAveragesPresent")
+    public void returnDescendingOrderOfStudentsByScoreWhenSimilarStudentAveragesPresent(){
+        Classroom room3 = new Classroom(new Student[]{student1, student2, student12});
+        Student[] expectedOrderOfStudents = {student12, student2, student1};
+        assertArrayEquals(expectedOrderOfStudents, room3.getStudentsByScore());
+    }
 
     @Test
     @DisplayName("returnCorrectGradeForStudentA")

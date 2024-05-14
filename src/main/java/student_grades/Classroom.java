@@ -1,9 +1,6 @@
 package student_grades;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Classroom {
     private Student[] students;
@@ -65,34 +62,21 @@ public class Classroom {
     }
 
     public Student[] getStudentsByScore() {
-        Student[] studentsByScore = new Student[students.length];
-        Double[] studentAverages = new Double[students.length];
-        for (int i = 0; i < students.length; i++) {
-            if(students[i] != null){
-                studentAverages[i] = students[i].getAverageExamScore();
-            } else{studentAverages[i] = 0.0;}
-        }
-
-        Arrays.sort(studentAverages, Collections.reverseOrder());
-
-        for(int x = 0; x < students.length; x++){
-            for(int y = 0; y < students.length; y++){
-                if(students[y] != null){
-                    if(studentAverages[x] == students[y].getAverageExamScore() && x + 1 < students.length && studentAverages[x].equals(studentAverages[x + 1])){
-                        if(y + 1 < students.length && studentAverages[x + 1].equals(studentAverages[y + 1])){
-                            if(students[y].getFirstName().compareTo(students[y+1].getFirstName()) > 0 || students[y].getLastName().compareTo(students[y+1].getLastName()) > 0){
-                                studentsByScore[x] = students[y];
-                                studentsByScore[x + 1] = students[y +1];
-                                x++;
-                            }
-                        }
-                    }
-                    if(studentAverages[x] == students[y].getAverageExamScore()){
-                        studentsByScore[x] = students[y];
-                    }
+        ArrayList<Student> studentList = new ArrayList<>(Arrays.asList(students));
+        Comparator<Student> comp = new Comparator<Student>(){
+            public int compare(Student i, Student j){
+                    if(i == null)
+                        return 0;
+                    if (i.getAverageExamScore() < j.getAverageExamScore())
+                        return 1;
+                    else
+                        return -1;
                 }
-            }
-        }
+
+        };
+        Collections.sort(studentList, comp);
+        Student[] studentsByScore = new Student[studentList.size()];
+        studentsByScore = studentList.toArray(studentsByScore);
         return studentsByScore;
     }
 

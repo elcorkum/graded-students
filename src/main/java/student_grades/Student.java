@@ -57,10 +57,17 @@ public class Student {
 
     public double getAverageExamScore(){
         double result = 0.0;
-        for(Double examScore: this.examScores){
-            result += examScore;
+        double total = 0.0;
+        if (!this.examScores.isEmpty()){
+            for(Double examScore: this.examScores){
+                total += examScore;
+            }
+            result = (double) Math.round(total / this.examScores.size() * 100) /100;
+        } else{
+            result = 0.0;
         }
-        return (double) Math.round(result / this.examScores.size() * 100) /100;
+
+        return result;
     }
 
     @Override

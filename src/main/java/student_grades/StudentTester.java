@@ -5,8 +5,8 @@ public class StudentTester {
     public static void main(String[] args) {
 
         Double[] s1Scores = { 90.0, 95.0};
-        Double[] s2Scores = { 70.0, 85.0, 78.8, 85.2};
-        Double[] s3Scores = {98.0, 57.0};
+        Double[] s2Scores = { 70.0, 35.0, 78.8, 85.2};
+        Double[] s3Scores = {28.0, 57.0};
         Double[] s4Scores = { 95.0, 90.0};
 
         Student s1 = new Student("Penny", "Soo", s1Scores);
@@ -39,7 +39,7 @@ public class StudentTester {
         while(iterator.hasNext()){
             Map.Entry<Student, Character> studentGrade = iterator.next();
             System.out.println(studentGrade.getKey() + "Grade : " +studentGrade.getValue());
-        }
+       }
 
     }
 }

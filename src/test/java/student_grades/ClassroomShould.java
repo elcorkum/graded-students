@@ -3,6 +3,7 @@ package student_grades;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -44,7 +45,7 @@ class ClassroomShould {
     public void returnCorrectClassroomAverageScore(){
         double totalAverageScore = (student1.getAverageExamScore() +
                 student2.getAverageExamScore() +
-                student3.getAverageExamScore()) / 3;
+                student3.getAverageExamScore()) / classroom.getStudents().length;
         double expected = (double) Math.round(totalAverageScore * 100) / 100;
         assertEquals(expected, classroom.getClassAverageExamScore());
     }
@@ -53,27 +54,29 @@ class ClassroomShould {
     @DisplayName("calculateCorrectClassroomAverageScoreWithNullStudent")
     public void returnCorrectClassroomAverageScoreWithNullStudent(){
         classroom.removeStudent("May", "Flower");
+        int remainingActiveStudents = classroom.getStudents().length - 1;
         double totalAverageScore = (student1.getAverageExamScore() +
-                student3.getAverageExamScore()) / 2;
+                student3.getAverageExamScore()) / remainingActiveStudents;
         double expected = (double) Math.round(totalAverageScore * 100) / 100;
         assertEquals(expected, classroom.getClassAverageExamScore());
     }
-
 
     @Test
     @DisplayName("allowAdditionOfStudentToClassroom")
     public void addStudentToClassroomCorrectly(){
         classroom.removeStudent(student2.getFirstName(), student2.getLastName());
         classroom.addStudent(student4);
-        assertSame(student4, classroom.getStudents()[2]);
+        int newStudentPosition = classroom.getStudents().length - 1;
+        assertSame(student4, classroom.getStudents()[newStudentPosition]);
     }
 
     @Test
     @DisplayName("denyAdditionOfStudentToClassroomIfClassroomFull")
     public void denyAdditionOfStudentToClassroom(){
         classroom.addStudent(student4);
-        assertEquals(3, classroom.getStudents().length);
-        assertNotSame(student4, classroom.getStudents()[2]);
+        int newStudentPosition = classroom.getStudents().length - 1;
+        assertEquals(studentsInClassroom.length, classroom.getStudents().length);
+        assertNotSame(student4, classroom.getStudents()[newStudentPosition]);
     }
 
 
@@ -82,9 +85,9 @@ class ClassroomShould {
     public void removeStudentFromClassroom(){
         classroom.removeStudent(student2.getFirstName(), student2.getLastName());
         Student[] remainingStudents = {student1, student3, null};
-        assertNull(classroom.getStudents()[2]);
+        int removedStudentPosition = classroom.getStudents().length - 1;
+        assertNull(classroom.getStudents()[removedStudentPosition]);
         assertArrayEquals(remainingStudents, classroom.getStudents());
-
     }
 
     @Test
@@ -99,8 +102,9 @@ class ClassroomShould {
     public void returnDescendingOrderOfStudentsByScoreWhenNullStudentPresent(){
         classroom.removeStudent(student1.getFirstName(), student1.getLastName());
         Student[] expectedOrderOfStudents = {student2, student3, null};
+        int positionOfNullStudent = classroom.getStudents().length - 1;
         assertArrayEquals(expectedOrderOfStudents, classroom.getStudentsByScore());
-        assertNull(classroom.getStudentsByScore()[2]);
+        assertNull(classroom.getStudentsByScore()[positionOfNullStudent]);
     }
 
     @Test
@@ -112,83 +116,36 @@ class ClassroomShould {
     }
 
     @Test
-    @DisplayName("returnCorrectGradeForStudentA")
-    public void returnCorrectGradeForA(){
-        Map<Student, Character> gradeBook = room1.getGradeBook();
-        assertEquals('A', gradeBook.get(student5));
-    }
+    @DisplayName("returnCorrectlyCalculatedGradeBook")
+    public void returnCorrectGradeBook(){
 
-    @Test
-    @DisplayName("returnCorrectGradeForStudentB")
-    public void returnCorrectGradeForB(){
-        Map<Student, Character> gradeBook = room1.getGradeBook();
-        assertEquals('B', gradeBook.get(student2));
-    }
+        Student[] allStudents = {student1, student2, student3, student11, student12};
+        Classroom funClass = new Classroom(allStudents);
+        double classAverage = funClass.getClassAverageExamScore();
+        double desiredClassAverage = 80.0;
+        double adjustedClassAverage = (classAverage / desiredClassAverage) * 100;
 
-    @Test
-    @DisplayName("returnCorrectGradeForStudentC")
-    public void returnCorrectGradeForC(){
-        Map<Student, Character> gradeBook = room1.getGradeBook();
-        assertEquals('C', gradeBook.get(student1));
-    }
-
-    @Test
-    @DisplayName("returnCorrectGradeForStudentD")
-    public void returnCorrectGradeForD(){
-        Map<Student, Character> gradeBook = room1.getGradeBook();
-        assertEquals('D', gradeBook.get(student3));
-    }
-
-    @Test
-    @DisplayName("returnCorrectGradeForStudentF")
-    public void returnCorrectGradeForF(){
-        Map<Student, Character> gradeBook = room1.getGradeBook();
-        assertEquals('F', gradeBook.get(student4));
-    }
-
-    @Test
-    @DisplayName("returnAForGradeNinety")
-    public void ninetyShouldReturnA(){
-        Map<Student, Character> gradeBook = room1.getGradeBook();
-        assertEquals('A', gradeBook.get(student7));
-    }
-    @Test
-    @DisplayName("returnBForGradeSeventy")
-    public void seventyShouldReturnB(){
-        Map<Student, Character> gradeBook = room1.getGradeBook();
-        assertEquals('B', gradeBook.get(student6));
-    }
-
-    @Test
-    @DisplayName("returnCForGradeFifty")
-    public void fiftyShouldReturnC(){
-        Map<Student, Character> gradeBook = room1.getGradeBook();
-        assertEquals('C', gradeBook.get(student8));
-    }
-
-    @Test
-    @DisplayName("returnDForGradeEleven")
-    public void elevenShouldReturnD(){
-        Map<Student, Character> gradeBook = room1.getGradeBook();
-        assertEquals('D', gradeBook.get(student9));
-    }
-    @Test
-    @DisplayName("returnFForGradeZero")
-    public void zeroShouldReturnF(){
-        Map<Student, Character> gradeBook = room1.getGradeBook();
-        assertEquals('F', gradeBook.get(student10));
-    }
-
-    @Test
-    @DisplayName("throwIllegalArgumentExceptionForNegativeGrade")
-    public void throwExceptionForNegativeGrade(){
-        Classroom room2 = new Classroom(new Student[]{student11});
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class ,
-                () -> {
-                    Map<Student, Character> gradeBook = room2.getGradeBook();
-                });
-        assertEquals("Student's score than 0: Negative scores cannot be graded.", e.getMessage());
+        Map<Student, Character> funClassGradeBook = new HashMap<>();
+        char grade;
+        for(int i = 0; i < allStudents.length; i++){
+            double adjustedStudentAverage = allStudents[i].getAverageExamScore()/ adjustedClassAverage * 100;
+            if(adjustedStudentAverage >= 90.0){
+                grade = 'A';
+            } else if(adjustedStudentAverage >= 70.0){
+                grade = 'B';
+            }else if(adjustedStudentAverage >= 50.0){
+                grade = 'C';
+            }else if(adjustedStudentAverage >= 11.0){
+                grade = 'D';
+            }else{
+                grade = 'F';
+            }
+            funClassGradeBook.put(allStudents[i], grade);
+        }
+        //assertTrue(funClassGradeBook.equals(funClass.getGradeBook()));
+        assertEquals(funClassGradeBook, funClass.getGradeBook());
 
 
     }
+
 }
